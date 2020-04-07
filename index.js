@@ -112,8 +112,10 @@ async function listBranches(owner,repo)
 // 2. Write code to create a new repo
 async function createRepo(owner,repo)
 {
-	let options = getDefaultOptions("/:owner/:repo", "POST");
-
+	let options = getDefaultOptions("/user/repos", "POST");
+	options.json={
+		name:repo
+	  }
 	// Send a http request to url and specify a callback that will be called upon its return.
 	return new Promise(function(resolve, reject)
 	{
@@ -128,7 +130,11 @@ async function createRepo(owner,repo)
 // 3. Write code for creating an issue for an existing repo.
 async function createIssue(owner,repo, issueName, issueBody)
 {
-	let options = getDefaultOptions("/repos/:owner/:repo/issues", "POST");
+	let options = getDefaultOptions("/repos/"+owner+"/"+repo+"/issues", "POST");
+	options.json={
+		title:issueName,
+		body:issueBody
+	  }
 
 	// Send a http request to url and specify a callback that will be called upon its return.
 	return new Promise(function(resolve, reject)
@@ -144,14 +150,16 @@ async function createIssue(owner,repo, issueName, issueBody)
 // 4. Write code for editing a repo to enable wiki support.
 async function enableWikiSupport(owner,repo)
 {
-	let options = getDefaultOptions("/:owner/:repo", "PATCH");
-
+	let options = getDefaultOptions("/repos/"+owner+"/"+repo, "PATCH");
+	options.json={
+		has_wiki:true
+	}
 	// Send a http request to url and specify a callback that will be called upon its return.
 	return new Promise(function(resolve, reject)
 	{
 		request(options, function (error, response, body) {
 
-			resolve( JSON.parse(body) );
+			resolve(body);
 		});
 	});	
 }
